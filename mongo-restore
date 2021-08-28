@@ -1,9 +1,12 @@
 #!/bin/bash
 #this script will call the mongodb tarball from /mnt/nas/mongodump/snapshots/*.tar.gz and restore it here for testing
-#it will then compare with the latest rsync value version on /mnt/nas/mongodump/dump/* which is rsynced from the same #dump file on e1, and alert if there is a difference.
+#it will then compare with the latest rsync value version on /mnt/nas/mongodump/dump/* which is rsynced from the same
+#dump file on e1, and alert if there is a difference.
 #Will perform a full restore and alert if there is an import failure via e-mail
 
+
 LATEST=$(date +%y-%m-%d)
+LOG_LOCATION=/mongo-2/logs/restore-${LATEST}.log
 
 #CLEANUP FOR NEXT IMPORT:
 rsync /mongo-2/latest-snapshot/*.tar.gz /mongo-2/restore-points/
@@ -15,10 +18,15 @@ find /mongo-2/restore-points/ -name "*.tar.gz" -type f -mtime +7 -delete
 echo "cleared oldest restore point +7 days"
 
 #Call tarball from nas and expand:
-cp /mnt/nas/mongodump/latest-snapshot/mongo-snap-${LATEST}.tar.gz /mongo-2/latest-snapshot/
+cp /mnt/nas/mongodump/snapshots/mongo-snap-${LATEST}*.tar.gz /mongo-2/latest-snapshot/
+echo "copied target snapshot to local"
 
 #expand the snapshot:
-tar -xvf /mongo-2/latest-snapshot/mongo-snap-${LATEST}.tar.gz --directory=/mongo-2/latest-snapshot/
+tar -xvf /mongo-2/latest-snapshot/mongo-snap-${LATEST}*.tar.gz --directory=/mongo-2/latest-snapshot/
+echo "expanded snapshot"
 
 #restore mongoDB to local mongo database:
-mongorestore /mongo-2/latest-snapshot/backup/mongo
+mongorestore --drop /mongo-2/latest-snapshot/backup/mongo
+echo "completed restore"
+
+echo "script completed"
