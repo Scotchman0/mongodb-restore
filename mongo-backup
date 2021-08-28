@@ -21,12 +21,12 @@ Backup_Baseline () {
 
 #capture mongdump:
 echo "starting mongodb backup"
-mongodump --username <username> --password $PASSWD --out ${BACKUP_DIR}
+mongodump --username ln30 --password $PASSWD --out ${BACKUP_DIR}
 
 #update the latest database readout via rsync capture to nas:
-sleep 2
-echo "moving local backup to nas"
-rsync -r ${BACKUP_DIR} /mnt/nas/mongodump/dump/
+#sleep 2
+#echo "moving local backup to nas"
+#rsync -r ${BACKUP_DIR} /mnt/nas/mongodump/dump/
 
 #remove yesterday's snap in prep for new one:
 echo "removing old snap from local"
@@ -34,7 +34,7 @@ rm /backup/latest-snapshot/mongo-snap-*.tar.gz
 
 #create fresh tarball + date/time
 echo "creating tarball for restore testing+recovery"
-tar -czf /backup/latest-snapshot/mongo-snap-$(date +%y-%m-%d-%H:%M).tar.gz /backup/mongo
+tar -czf /backup/latest-snapshot/mongo-snap-$(date +%y-%m-%d).tar.gz /backup/mongo
 
 #copy latest snap to local backup dir:
 cp /backup/latest-snapshot/mongo-snap-*.tar.gz /backup/mongo-snapshots/
@@ -45,7 +45,7 @@ echo "sending tar to nas"
 rsync -av /backup/latest-snapshot/mongo-snap-*.tar.gz /mnt/nas/mongodump/snapshots/
 
 #VALIDATE THAT SYSTEM BACKUP DID OCCUR AND ONLY THEN APPROVE DELETION OF OLDEST FILES:
-if [[ -f /mnt/nas/mongodump/snapshots/mongo-snap-$(date +%y-%m-%d)*.tar.gz ]]
+if [[ -f /mnt/nas/mongodump/snapshots/mongo-snap-$(date +%y-%m-%d).tar.gz ]]
 then
         cleanup_old
         echo "backups captured and confirmed stored on nas"
