@@ -21,7 +21,7 @@ Backup_Baseline () {
 
 #capture mongdump:
 echo "starting mongodb backup"
-mongodump --username ln30 --password $PASSWD --out ${BACKUP_DIR}
+mongodump --username <username> --password $PASSWD --out ${BACKUP_DIR}
 
 #update the latest database readout via rsync capture to nas:
 #sleep 2
