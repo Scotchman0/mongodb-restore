@@ -5,7 +5,7 @@
 
 BACKUP_DIR=/backup/mongo
 PASSWD=$(cat /backup/.secret)
-USER=<DEFINE_ME>
+LOG_LOCATION=/home/wradmin/logs/mongo-snap-$(date +%y-%m-%d).log
 
 cleanup_old () {
         #remove oldest snapshots from /backup/mongo-snapshots older than 30 days:
@@ -17,10 +17,11 @@ cleanup_old () {
         echo "removed snaps older than 30 days from nas"
 }
 
+Backup_Baseline () {
 
 #capture mongdump:
 echo "starting mongodb backup"
-mongodump --username $USER --password $PASSWD --out ${BACKUP_DIR}
+mongodump --username <username> --password $PASSWD --out ${BACKUP_DIR}
 
 #update the latest database readout via rsync capture to nas:
 sleep 2
@@ -44,7 +45,7 @@ echo "sending tar to nas"
 rsync -av /backup/latest-snapshot/mongo-snap-*.tar.gz /mnt/nas/mongodump/snapshots/
 
 #VALIDATE THAT SYSTEM BACKUP DID OCCUR AND ONLY THEN APPROVE DELETION OF OLDEST FILES:
-if [[ -f /mnt/nas/mongodump/snapshots/mongo-snap-${date +%y-%m-%d}.tar.gz ]]
+if [[ -f /mnt/nas/mongodump/snapshots/mongo-snap-$(date +%y-%m-%d).tar.gz ]]
 then
         cleanup_old
         echo "backups captured and confirmed stored on nas"
@@ -53,3 +54,7 @@ else
         echo "could not validate nas capture of backup, refusing to delete old versions"
         exit 0
 fi
+}
+
+echo "starting backup"
+Backup_Baseline | tee 2>&1 $LOG_LOCATION
