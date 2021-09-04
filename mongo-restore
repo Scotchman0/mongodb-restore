@@ -7,6 +7,7 @@
 
 LATEST=$(date +%y-%m-%d)
 LOG_LOCATION=/mongo-2/logs/restore-${LATEST}.log
+$SECRET=$(cat /mongo-2/.secret)
 
 restore_script () {
 #CLEANUP FOR NEXT IMPORT:
@@ -27,7 +28,7 @@ tar -xvf /mongo-2/latest-snapshot/mongo-snap-${LATEST}*.tar.gz --directory=/mong
 echo "expanded snapshot"
 
 #restore mongoDB to local mongo database:
-mongorestore --drop /mongo-2/latest-snapshot/backup/mongo
+mongorestore -u <username> -p $SECRET --drop /mongo-2/latest-snapshot/backup/mongo
 echo "completed restore"
 
 echo "script completed"
