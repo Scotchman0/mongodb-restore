@@ -20,7 +20,6 @@ $PGREP ${MONGO}
 #check to see if mongodb has a process ID:
 if [ $? -ne 0 ]
 then # restart mongo
-  #$RESTART
-  echo "TEST"
+  $RESTART
   echo "mongo went down, and required a restart at ${LATEST}" >> /mongo-2/logs/mongo-rebooted.log
 fi
