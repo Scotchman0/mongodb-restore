@@ -2,6 +2,9 @@
 # Mongo Process Monitor
 # Restart Mongo restore Server When It Goes Down
 
+#timestamp:
+LATEST=$(date +%y-%m-%d-%H-%M)
+
 # restart command
 RESTART="/bin/systemctl restart mongodb"
 
@@ -19,5 +22,5 @@ if [ $? -ne 0 ]
 then # restart mongo
   #$RESTART
   echo "TEST"
-  echo "mongo went down, and required a restart at ${date}" >> /mongo-2/logs/mongo-rebooted-${date}.log
+  echo "mongo went down, and required a restart at ${LATEST}" >> /mongo-2/logs/mongo-rebooted.log
 fi
