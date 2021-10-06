@@ -1,0 +1,23 @@
+#!/bin/bash
+# Mongo Process Monitor
+# Restart Mongo restore Server When It Goes Down
+
+# restart command
+RESTART="/bin/systemctl restart mongodb"
+
+#Path to pgrep command
+PGREP="/usr/bin/pgrep"
+
+# mongo daemon name:
+MONGO="mongod"
+
+# Find mongo pid
+$PGREP ${MONGO}
+
+#check to see if mongodb has a process ID:
+if [ $? -ne 0 ]
+then # restart mongo
+  #$RESTART
+  echo "TEST"
+  echo "mongo went down, and required a restart at ${date}" >> /mongo-2/logs/mongo-rebooted-${date}.log
+fi
