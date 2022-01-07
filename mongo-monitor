@@ -8,17 +8,11 @@ LATEST=$(date +%y-%m-%d-%H-%M)
 # restart command
 RESTART="/bin/systemctl restart mongodb"
 
-#Path to pgrep command
-PGREP="/usr/bin/pgrep"
-
-# mongo daemon name:
-MONGO="mongod"
-
 # Find mongo pid
-$PGREP ${MONGO}
+safty_pid=$(pgrep mongod)
 
 #check to see if mongodb has a process ID:
-if [ $? -ne 0 ]
+if [ $safety_pid -ne 0 ]
 then # restart mongo
   $RESTART
   echo "mongo went down, and required a restart at ${LATEST}" >> /mongo-2/logs/mongo-rebooted.log
