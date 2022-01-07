@@ -9,7 +9,7 @@ LATEST=$(date +%y-%m-%d-%H-%M)
 RESTART="/bin/systemctl restart mongodb"
 
 # Find mongo pid
-safty_pid=$(pgrep mongod)
+safety_pid=$(pgrep mongod)
 
 #check to see if mongodb has a process ID:
 if [ $safety_pid -ne 0 ]
